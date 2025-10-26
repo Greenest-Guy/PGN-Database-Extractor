@@ -6,7 +6,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/notnil/chess"
+	"github.com/corentings/chess/v2"
 )
 
 func main() {
@@ -23,8 +23,8 @@ func main() {
 	count := 0
 	num_games := 10000
 
-	for scanner.Scan() {
-		game := scanner.Next()
+	for scanner.HasNext() {
+		game, _ := scanner.ParseNext()
 		game.GetTagPair("Opening")
 
 		count++
