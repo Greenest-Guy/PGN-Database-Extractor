@@ -1,1 +1,1 @@
-# PGN-Parser
+# PGN-Database-Extractor
