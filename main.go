@@ -6,13 +6,15 @@ import (
 	"os"
 	"time"
 
+	"PGN-Database-Extractor/config"
+
 	"github.com/corentings/chess/v2"
 )
 
 func main() {
 	start := time.Now()
 
-	f, err := os.Open("first_million.pgn")
+	f, err := os.Open(config.PgnPath())
 	if err != nil {
 		log.Fatal(err)
 	}
