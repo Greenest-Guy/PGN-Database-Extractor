@@ -18,7 +18,7 @@ func main() {
 	count := 0
 	bar := progressbar.Default(100)
 	lastPercent := 0
-	const num_games = 500000
+	const num_games = 10000
 	var TimeControls []string
 
 	start := time.Now() // Start counting time
@@ -35,7 +35,7 @@ func main() {
 		game, _ := scanner.ParseNext()
 		opening := game.GetTagPair("TimeControl")
 
-		TimeControls = append(TimeControls, opening)
+		_ = append(TimeControls, opening) // TimeControls
 
 		count++
 		if count == num_games {
