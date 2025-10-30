@@ -5,6 +5,8 @@ package main
 import (
 	"fmt"
 	"log"
+	"net/http"
+	_ "net/http/pprof"
 	"os"
 	"time"
 
@@ -15,11 +17,15 @@ import (
 )
 
 func main() {
+	go func() {
+		log.Println(http.ListenAndServe("localhost:6060", nil)) // http://localhost:6060/debug/pprof/
+	}()
+
 	count := 0
 	bar := progressbar.Default(100)
 	lastPercent := 0
-	const num_games = 10000
-	var TimeControls []string
+	const num_games = 1000000
+	var games []string
 
 	start := time.Now() // Start counting time
 
@@ -32,10 +38,9 @@ func main() {
 	scanner := chess.NewScanner(f)
 
 	for scanner.HasNext() {
-		game, _ := scanner.ParseNext()
-		opening := game.GetTagPair("TimeControl")
+		game, _ := scanner.ScanGame()
 
-		_ = append(TimeControls, opening) // TimeControls
+		games = append(games, game.Raw)
 
 		count++
 		if count == num_games {
@@ -51,7 +56,6 @@ func main() {
 	}
 
 	elapsed := time.Since(start)
-
 	fmt.Printf("\n\n")
 	fmt.Printf("Number of games processed: %d\n", num_games)
 	fmt.Printf("Time taken: %s\n", elapsed)
