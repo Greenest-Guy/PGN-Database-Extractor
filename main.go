@@ -35,6 +35,7 @@ func main() {
 	}
 	defer f.Close()
 
+	// Scan each game (NO MOVE VALIDATION)
 	scanner := chess.NewScanner(f)
 
 	for scanner.HasNext() {
@@ -56,7 +57,10 @@ func main() {
 	}
 
 	elapsed := time.Since(start)
+
+	// display info
 	fmt.Printf("\n\n")
-	fmt.Printf("Number of games processed: %d\n", num_games)
+	fmt.Printf("Number of games processed: %d\n", count)
+	fmt.Printf("Number of games extracted: %d\n", len(games))
 	fmt.Printf("Time taken: %s\n", elapsed)
 }
