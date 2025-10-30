@@ -3,11 +3,14 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
 	"log"
 	"net/http"
 	_ "net/http/pprof"
 	"os"
+	"regexp"
+	"strings"
 	"time"
 
 	"PGN-Database-Extractor/config"
@@ -18,13 +21,13 @@ import (
 
 func main() {
 	go func() {
-		log.Println(http.ListenAndServe("localhost:6060", nil)) // http://localhost:6060/debug/pprof/
+		log.Println(http.ListenAndServe("localhost:6060", nil)) // http://localhost:6060/debug/pprof/profile?seconds=5
 	}()
 
 	count := 0
 	bar := progressbar.Default(100)
 	lastPercent := 0
-	const num_games = 1000000
+	const num_games = 1
 	var games []string
 
 	start := time.Now() // Start counting time
@@ -43,6 +46,8 @@ func main() {
 
 		games = append(games, game.Raw)
 
+		fmt.Println(getTag(game.Raw, "TimeControl"))
+
 		count++
 		if count == num_games {
 			bar.Set(100)
@@ -58,9 +63,24 @@ func main() {
 
 	elapsed := time.Since(start)
 
-	// display info
+	// Displays info
 	fmt.Printf("\n\n")
 	fmt.Printf("Number of games processed: %d\n", count)
 	fmt.Printf("Number of games extracted: %d\n", len(games))
 	fmt.Printf("Time taken: %s\n", elapsed)
+}
+
+func getTag(rawPGN string, tag string) string {
+	scanner := bufio.NewScanner(strings.NewReader(rawPGN))
+	re := regexp.MustCompile(`"(.*?)"`)
+
+	for scanner.Scan() {
+		line := scanner.Text()
+		if strings.HasPrefix(line, "["+tag) { // checks if tag exists
+			if match := re.FindStringSubmatch(line); len(match) > 1 { // checks if tag has value
+				return match[1]
+			}
+		}
+	}
+	return "" // returns empty string if tag not found
 }
