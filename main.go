@@ -44,7 +44,9 @@ func main() {
 	for scanner.HasNext() {
 		game, _ := scanner.ScanGame()
 
-		games = append(games, game.Raw)
+		if meetsCriteria() {
+			games = append(games, game.Raw)
+		}
 
 		getTag(game.Raw, "TimeControl")
 
@@ -83,4 +85,14 @@ func getTag(rawPGN string, tag string) string {
 		}
 	}
 	return "" // returns empty string if tag not found
+}
+
+func meetsCriteria() bool {
+	//min_rating := 0
+	//max_rating := 1000
+
+	//min_rating_diff := 100
+
+	//var time_controls = [2]string{"30+0", "60+0"}
+	return true
 }
