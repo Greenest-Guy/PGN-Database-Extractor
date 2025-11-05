@@ -10,6 +10,7 @@ import (
 	_ "net/http/pprof"
 	"os"
 	"regexp"
+	"slices"
 	"strings"
 	"time"
 
@@ -44,7 +45,7 @@ func main() {
 	for scanner.HasNext() {
 		game, _ := scanner.ScanGame()
 
-		if meetsCriteria() {
+		if meetsCriteria(game.Raw) {
 			games = append(games, game.Raw)
 		}
 
@@ -87,12 +88,8 @@ func getTag(rawPGN string, tag string) string {
 	return "" // returns empty string if tag not found
 }
 
-func meetsCriteria() bool {
-	//min_rating := 0
-	//max_rating := 1000
+func meetsCriteria(rawPGN string) bool {
+	var time_controls = []string{"1800+0", "1800+5", "1800+10", "1800+15", "1800+20", "1800+25", "1800+30"}
 
-	//min_rating_diff := 100
-
-	//var time_controls = [2]string{"30+0", "60+0"}
-	return true
+	return slices.Contains(time_controls, getTag(rawPGN, "TimeControl"))
 }
