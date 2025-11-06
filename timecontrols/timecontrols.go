@@ -1,35 +1,74 @@
 package timecontrols
 
-// seconds+increment
+import (
+	"fmt"
+	"strconv"
+	"strings"
+)
 
-// Classical
-var Classical = []string{
-	"1800+0",
-	"1800+5",
-	"1800+10",
-	"1800+15",
-	"1800+20",
-	"1800+25",
-	"1800+30",
+/*
+https://lichess.org/faq#time-controls
+Lichess time controls are based on estimated game duration = (clock initial time in seconds) + 40 × (clock increment).
+
+≤ 29s = UltraBullet
+≤ 179s = Bullet
+≤ 479s = Blitz
+≤ 1499s = Rapid
+≥ 1500s = Classical
+*/
+
+func estimatedGameDuration(timecontrol string) (int, error) {
+	if timecontrol == "-" {
+		return -1, nil
+	}
+
+	parts := strings.Split(timecontrol, "+")
+	if len(parts) != 2 {
+		return 0, fmt.Errorf("invalid time control format: %s", timecontrol)
+	}
+
+	initialTime, err := strconv.Atoi(parts[0])
+	if err != nil {
+		return 0, fmt.Errorf("invalid initial time: %s", parts[0])
+	}
+
+	increment, err := strconv.Atoi(parts[1])
+	if err != nil {
+		return 0, fmt.Errorf("invalid increment: %s", parts[1])
+	}
+
+	return initialTime*60 + 40*increment, nil
 }
 
-// Rapid
-var Rapid = []string{
-	"25+10",
-	"15+10",
-	"10+5",
-}
+func GetTimeControl(timecontrol string) (string, error) {
+	/*
+		≤ 29s = UltraBullet
+		≤ 179s = Bullet
+		≤ 479s = Blitz
+		≤ 1499s = Rapid
+		≥ 1500s = Classical
+	*/
 
-// Blitz
-var Blitz = []string{
-	"5+3",
-	"3+2",
-	"3+0",
-}
+	est_duration, err := estimatedGameDuration(timecontrol)
+	if err != nil {
+		return "", err
+	}
 
-// Bullet
-var Bullet = []string{
-	"2+1",
-	"1+0",
-	"1+1",
+	if est_duration == -1 {
+		return "-", nil
+	}
+
+	if est_duration <= 29 {
+		return "UltraBullet", nil
+	} else if 29 < est_duration && est_duration <= 179 {
+		return "Bullet", nil
+	} else if 179 < est_duration && est_duration <= 479 {
+		return "Blitz", nil
+	} else if 479 < est_duration && est_duration <= 1499 {
+		return "Rapid", nil
+	} else if est_duration >= 1500 {
+		return "Classical", nil
+	} else {
+		return "", nil
+	}
 }

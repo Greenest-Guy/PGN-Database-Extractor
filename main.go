@@ -10,11 +10,11 @@ import (
 	_ "net/http/pprof"
 	"os"
 	"regexp"
-	"slices"
 	"strings"
 	"time"
 
 	"PGN-Database-Extractor/config"
+	"PGN-Database-Extractor/timecontrols"
 
 	"github.com/corentings/chess/v2"
 	"github.com/schollz/progressbar/v3"
@@ -70,7 +70,7 @@ func main() {
 	fmt.Printf("\n\n")
 	fmt.Printf("Number of games processed: %d\n", count)
 	fmt.Printf("Number of games extracted: %d\n", len(games))
-	fmt.Printf("Time taken: %s\n", elapsed)
+	fmt.Printf("Time elapsed: %s\n", elapsed)
 }
 
 func getTag(rawPGN string, tag string) string {
@@ -89,7 +89,9 @@ func getTag(rawPGN string, tag string) string {
 }
 
 func meetsCriteria(rawPGN string) bool {
-	var time_controls = []string{"1800+0", "1800+5", "1800+10", "1800+15", "1800+20", "1800+25", "1800+30"}
-
-	return slices.Contains(time_controls, getTag(rawPGN, "TimeControl"))
+	timecontrol, err := timecontrols.GetTimeControl(getTag(rawPGN, "TimeControl"))
+	if err != nil {
+		log.Fatal(err)
+	}
+	return timecontrol == "Classical"
 }
