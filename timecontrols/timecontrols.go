@@ -68,7 +68,8 @@ func GetTimeControl(timecontrol string) (string, error) {
 		return "Rapid", nil
 	} else if est_duration >= 1500 {
 		return "Classical", nil
-	} else {
-		return "", nil
 	}
+
+	return "", nil
+
 }
