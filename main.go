@@ -93,5 +93,5 @@ func meetsCriteria(rawPGN string) bool {
 	if err != nil {
 		log.Fatal(err)
 	}
-	return timecontrol == "Classical"
+	return timecontrol == "UltraBullet"
 }
