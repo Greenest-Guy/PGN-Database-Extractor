@@ -37,6 +37,7 @@ func estimatedGameDuration(timecontrol string) (int, error) {
 		return 0, fmt.Errorf("invalid increment: %s", parts[1])
 	}
 
+	// estimated game duration = (clock initial time in seconds) + 40 × (clock increment)
 	return initialTime + 40*increment, nil
 }
 
