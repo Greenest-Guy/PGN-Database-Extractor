@@ -32,7 +32,7 @@ func main() {
 	count := 0
 	bar := progressbar.Default(100)
 	lastPercent := 0
-	const num_games = 1000000
+	const num_games = 91549148
 
 	start := time.Now() // Start counting time
 
@@ -42,7 +42,7 @@ func main() {
 	}
 	defer f.Close()
 
-	writer, err := csvwriter.New(criteria.FileName)
+	writer, err := csvwriter.New(config.OutputPath() + "/" + criteria.FileName)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -77,6 +77,7 @@ func main() {
 		}
 	}
 
+	games_written := writer.GetRowCount()
 	writer.Close()
 
 	elapsed := time.Since(start)
@@ -84,7 +85,7 @@ func main() {
 	// Displays info
 	fmt.Printf("\n\n")
 	fmt.Printf("Number of games processed: %d\n", count)
-	fmt.Printf("Number of games extracted: \n")
+	fmt.Printf("Number of games extracted: %d\n", games_written)
 	fmt.Printf("Time elapsed: %s\n", elapsed)
 }
 
@@ -104,7 +105,15 @@ func getTag(rawPGN string, tag string) string {
 }
 
 func getMoves(rawPGN string) string {
-	return ""
+	scanner := bufio.NewScanner(strings.NewReader(rawPGN))
+
+	for scanner.Scan() {
+		line := scanner.Text()
+		if strings.HasPrefix(line, "1. ") {
+			return line
+		}
+	}
+	return "" // returns empty string if moves not found
 }
 
 func meetsCriteria(rawPGN string) bool {
@@ -126,7 +135,7 @@ func meetsCriteria(rawPGN string) bool {
 		return false
 	}
 
-	return timecontrol == criteria.TimeControl && skillgroup == criteria.SkillGroup && elodiff <= criteria.MaxEloDiff
+	return timecontrol == criteria.TimeControl && skillgroup == criteria.SkillGroup && elodiff <= criteria.MaxEloDiff && getMoves(rawPGN) != ""
 }
 
 func parseInt32(s string) int32 {

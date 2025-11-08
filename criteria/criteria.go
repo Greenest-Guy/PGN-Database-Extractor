@@ -3,15 +3,15 @@ package criteria
 import "fmt"
 
 /*
-Time Controls - UltraBullet, Bullet, Blitz, Rapid, Classical
 Skill Groups - Beginner, Intermediate, Expert
+Time Controls - UltraBullet, Bullet, Blitz, Rapid, Classical
 Maximum Elo Difference - The Maximum allowed difference between black's elo and white's elo
 FileName - Name of output file
 */
 
 var (
-	TimeControl = "Classical"
-	SkillGroup  = "Expert"
-	MaxEloDiff  = 100
+	TimeControl = "Rapid"
+	SkillGroup  = "Beginner"
+	MaxEloDiff  = 150
 	FileName    = fmt.Sprintf("%s_%s_%d.csv", TimeControl, SkillGroup, MaxEloDiff)
 )
