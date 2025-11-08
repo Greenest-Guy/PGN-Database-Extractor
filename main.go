@@ -14,6 +14,9 @@ import (
 	"time"
 
 	"PGN-Database-Extractor/config"
+	"PGN-Database-Extractor/criteria"
+	"PGN-Database-Extractor/elodiffs"
+	"PGN-Database-Extractor/skillgroups"
 	"PGN-Database-Extractor/timecontrols"
 
 	"github.com/corentings/chess/v2"
@@ -48,8 +51,6 @@ func main() {
 		if meetsCriteria(game.Raw) {
 			games = append(games, game.Raw)
 		}
-
-		getTag(game.Raw, "TimeControl")
 
 		count++
 		if count == num_games {
@@ -91,7 +92,21 @@ func getTag(rawPGN string, tag string) string {
 func meetsCriteria(rawPGN string) bool {
 	timecontrol, err := timecontrols.GetTimeControl(getTag(rawPGN, "TimeControl"))
 	if err != nil {
-		log.Fatal(err)
+		fmt.Println(err)
+		return false
 	}
-	return timecontrol == "Classical"
+
+	skillgroup, err := skillgroups.GetSkillGroup(getTag(rawPGN, "BlackElo"), getTag(rawPGN, "WhiteElo"))
+	if err != nil {
+		fmt.Println(err)
+		return false
+	}
+
+	elodiff, err := elodiffs.GetEloDiff(getTag(rawPGN, "BlackElo"), getTag(rawPGN, "WhiteElo"))
+	if err != nil {
+		fmt.Println(err)
+		return false
+	}
+
+	return timecontrol == criteria.TimeControl && skillgroup == criteria.SkillGroup && elodiff <= criteria.MaxEloDiff
 }
