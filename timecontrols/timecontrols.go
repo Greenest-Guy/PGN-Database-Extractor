@@ -17,6 +17,13 @@ Lichess time controls are based on estimated game duration = (clock initial time
 ≥ 1500s = Classical
 */
 
+const (
+	UltraBulletThreshold = 29
+	BulletThreshold      = 179
+	BlitzThreshold       = 479
+	RapidThreshold       = 1499
+)
+
 func estimatedGameDuration(timecontrol string) (int, error) {
 	if timecontrol == "-" {
 		return -1, nil
@@ -50,27 +57,24 @@ func GetTimeControl(timecontrol string) (string, error) {
 		≥ 1500s = Classical
 	*/
 
-	est_duration, err := estimatedGameDuration(timecontrol)
+	estDuration, err := estimatedGameDuration(timecontrol)
 	if err != nil {
 		return "", err
 	}
 
-	if est_duration == -1 {
+	if estDuration == -1 {
 		return "-", nil
 	}
 
-	if est_duration <= 29 {
+	if estDuration <= UltraBulletThreshold {
 		return "UltraBullet", nil
-	} else if 29 < est_duration && est_duration <= 179 {
+	} else if estDuration <= BulletThreshold {
 		return "Bullet", nil
-	} else if 179 < est_duration && est_duration <= 479 {
+	} else if estDuration <= BlitzThreshold {
 		return "Blitz", nil
-	} else if 479 < est_duration && est_duration <= 1499 {
+	} else if estDuration <= RapidThreshold {
 		return "Rapid", nil
-	} else if est_duration >= 1500 {
+	} else {
 		return "Classical", nil
 	}
-
-	return "", nil
-
 }

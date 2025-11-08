@@ -5,13 +5,13 @@ import (
 	"strconv"
 )
 
-func GetEloDiff(BlackEloTag string, WhiteEloTag string) (int, error) {
-	BlackElo, err := strconv.Atoi(BlackEloTag)
+func GetEloDiff(blackEloTag string, whiteEloTag string) (int, error) {
+	BlackElo, err := strconv.Atoi(blackEloTag)
 	if err != nil {
 		return 0, fmt.Errorf("invalid black elo tag")
 	}
 
-	WhiteElo, err := strconv.Atoi(WhiteEloTag)
+	WhiteElo, err := strconv.Atoi(whiteEloTag)
 	if err != nil {
 		return 0, fmt.Errorf("invalid white elo tag")
 	}

@@ -5,19 +5,24 @@ import (
 	"strconv"
 )
 
-func GetSkillGroup(BlackEloTag string, WhiteEloTag string) (string, error) {
-	BlackElo, _ := strconv.Atoi(BlackEloTag)
-	WhiteElo, _ := strconv.Atoi(WhiteEloTag)
+func GetSkillGroup(blackEloTag string, whiteEloTag string) (string, error) {
+	BlackElo, err := strconv.Atoi(blackEloTag)
+	if err != nil {
+		return "", fmt.Errorf("invalid black elo '%s': %w", blackEloTag, err)
+	}
+
+	WhiteElo, err := strconv.Atoi(whiteEloTag)
+	if err != nil {
+		return "", fmt.Errorf("invalid white elo '%s': %w", whiteEloTag, err)
+	}
 
 	average := (BlackElo + WhiteElo) / 2
 
 	if average < 1400 {
 		return "Beginner", nil
-	} else if 1400 <= average && average < 2000 {
+	} else if average < 2000 {
 		return "Intermediate", nil
-	} else if 2000 <= average {
+	} else {
 		return "Expert", nil
 	}
-
-	return "", fmt.Errorf("error calculating skill group")
 }
