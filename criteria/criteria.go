@@ -13,5 +13,5 @@ var (
 	TimeControl = "Classical"
 	SkillGroup  = "Expert"
 	MaxEloDiff  = 100
-	FileName    = fmt.Sprintf("%s_%s_%d.parquet", TimeControl, SkillGroup, MaxEloDiff)
+	FileName    = fmt.Sprintf("%s_%s_%d.csv", TimeControl, SkillGroup, MaxEloDiff)
 )

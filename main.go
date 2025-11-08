@@ -15,6 +15,7 @@ import (
 
 	"PGN-Database-Extractor/config"
 	"PGN-Database-Extractor/criteria"
+	"PGN-Database-Extractor/csvwriter"
 	"PGN-Database-Extractor/elodiffs"
 	"PGN-Database-Extractor/skillgroups"
 	"PGN-Database-Extractor/timecontrols"
@@ -32,7 +33,6 @@ func main() {
 	bar := progressbar.Default(100)
 	lastPercent := 0
 	const num_games = 1000000
-	var games []string
 
 	start := time.Now() // Start counting time
 
@@ -42,14 +42,26 @@ func main() {
 	}
 	defer f.Close()
 
+	writer, err := csvwriter.New(criteria.FileName)
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	// Scan each game (NO MOVE VALIDATION)
 	scanner := chess.NewScanner(f)
 
 	for scanner.HasNext() {
 		game, _ := scanner.ScanGame()
+		rawpgn := game.Raw
 
-		if meetsCriteria(game.Raw) {
-			games = append(games, game.Raw)
+		if meetsCriteria(rawpgn) {
+			chessGame := csvwriter.ChessGame{
+				WhiteElo:    parseInt32(getTag(rawpgn, "WhiteElo")),
+				BlackElo:    parseInt32(getTag(rawpgn, "BlackElo")),
+				TimeControl: getTag(rawpgn, "TimeControl"),
+				Moves:       getMoves(rawpgn),
+			}
+			writer.Append(chessGame)
 		}
 
 		count++
@@ -65,12 +77,14 @@ func main() {
 		}
 	}
 
+	writer.Close()
+
 	elapsed := time.Since(start)
 
 	// Displays info
 	fmt.Printf("\n\n")
 	fmt.Printf("Number of games processed: %d\n", count)
-	fmt.Printf("Number of games extracted: %d\n", len(games))
+	fmt.Printf("Number of games extracted: \n")
 	fmt.Printf("Time elapsed: %s\n", elapsed)
 }
 
@@ -87,6 +101,10 @@ func getTag(rawPGN string, tag string) string {
 		}
 	}
 	return "" // returns empty string if tag not found
+}
+
+func getMoves(rawPGN string) string {
+	return ""
 }
 
 func meetsCriteria(rawPGN string) bool {
@@ -109,4 +127,10 @@ func meetsCriteria(rawPGN string) bool {
 	}
 
 	return timecontrol == criteria.TimeControl && skillgroup == criteria.SkillGroup && elodiff <= criteria.MaxEloDiff
+}
+
+func parseInt32(s string) int32 {
+	var result int32
+	fmt.Sscanf(s, "%d", &result)
+	return result
 }
