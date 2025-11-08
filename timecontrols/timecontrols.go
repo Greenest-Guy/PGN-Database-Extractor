@@ -74,7 +74,6 @@ func GetTimeControl(timecontrol string) (string, error) {
 		return "Blitz", nil
 	} else if estDuration <= RapidThreshold {
 		return "Rapid", nil
-	} else {
-		return "Classical", nil
 	}
+	return "Classical", nil
 }

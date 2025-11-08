@@ -22,7 +22,6 @@ func GetSkillGroup(blackEloTag string, whiteEloTag string) (string, error) {
 		return "Beginner", nil
 	} else if average < 2000 {
 		return "Intermediate", nil
-	} else {
-		return "Expert", nil
 	}
+	return "Expert", nil
 }
