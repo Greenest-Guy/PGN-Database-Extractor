@@ -13,6 +13,7 @@ git clone https://github.com/Greenest-Guy/PGN-Database-Extractor
 2. Edit the ```.env``` file setting ```PGN_PATH='/your/path/here'``` and ```OUTPUT_PATH='/your/path/here```.
 3. Edit the parameters in ```/criteria/criteria.go```.
 4. To change the definitions for skill groups, edit ```/skillgroups/skillgroups.go```.
+5. Run the program with ```go run main.go``` in an integrated terminal.
 
 ## CPU Profile (10-Minute)
 ![profile](https://github.com/Greenest-Guy/PGN-Database-Extractor/blob/main/10min-CPU-profile-prod.png)
