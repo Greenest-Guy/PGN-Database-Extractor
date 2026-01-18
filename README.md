@@ -3,6 +3,16 @@ Parse and extract chess games into a CSV based on time control, skill group (ELO
 
 [![CodeFactor Grade](https://img.shields.io/codefactor/grade/github/Greenest-Guy/PGN-Database-Extractor?style=for-the-badge)](https://www.codefactor.io/repository/github/greenest-guy/PGN-Database-Extractor)
 
+## Parser Design & Guarantees
+
+- CSV formatted as ```WhiteElo,BlackElo,TimeControl,Moves```, where ```TimeControl``` is in the X+Y format, and ```Moves``` are a single string as formated in the PGN.
+
+- No move validation, games are assumed to only contain legal moves.
+  
+- Time controls are based on their [Lichess definitions](https://lichess.org/faq#time-controls).
+
+- Games are scanned individually for RAM safety.
+
 ## Example
 ### Parameters
 ```Go
