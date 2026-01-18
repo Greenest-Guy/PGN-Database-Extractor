@@ -10,7 +10,7 @@ Parse and extract chess games to CSV format, based on time control, skill group 
 git clone https://github.com/Greenest-Guy/PGN-Database-Extractor
 ```
 1. Clone the repository
-2. Create a ```.env``` file setting ```PGN_PATH='/your/path/here'``` and ```OUTPUT_PATH='/your/path/here```.
+2. Edit the ```.env``` file setting ```PGN_PATH='/your/path/here'``` and ```OUTPUT_PATH='/your/path/here```.
 3. Edit the parameters in ```/criteria/criteria.go```.
 4. To change the definitions for skill groups, edit ```/skillgroups/skillgroups.go```.
 
